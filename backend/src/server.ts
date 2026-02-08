@@ -8,9 +8,15 @@ const server = Fastify({ logger: true });
 
 async function start() {
   try {
-    // Register CORS to allow frontend on port 3000 to call backend on port 4000
+    // Register CORS to allow frontend development servers (any localhost port) to call backend on port 4000
     await server.register(cors, {
-      origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+      origin: [
+        // allow localhost and 127.0.0.1 on any port (dev servers may run on 3000, 3001, etc.)
+        /^https?:\/\/localhost(?::\d+)?$/,
+        /^https?:\/\/127\.0\.0\.1(?::\d+)?$/,
+        // allow local network dev host used by Vite when binding to LAN
+        "http://192.168.2.187:3001"
+      ],
       credentials: true,
     });
 
