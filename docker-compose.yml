@@ -2,9 +2,7 @@ version: "3.8"
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: KaanCanINC/sidebery-backend:latest
     container_name: sidebery-backend
     volumes:
       - ./backend/data:/app/data
@@ -21,9 +19,7 @@ services:
       start_period: 10s
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: KaanCanINC/sidebery-frontend:latest
     container_name: sidebery-frontend
     ports:
       - "3000:80"

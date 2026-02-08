@@ -1,4 +1,4 @@
-FROM node:18-alpine as builder
+FROM node:22-alpine as builder
 WORKDIR /app
 COPY package.json package-lock.json* vite.config.ts tsconfig.json index.html ./ 
 COPY src ./src
