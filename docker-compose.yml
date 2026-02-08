@@ -19,10 +19,15 @@ services:
       start_period: 10s
 
   frontend:
-    image: KaanCanINC/sidebery-frontend:latest
+    image: kaancaninc/sidebery-frontend:latest
     container_name: sidebery-frontend
     ports:
       - "3000:80"
+    labels:
+      - "casaos.webui.port=80"
+      - "casaos.webui.path=/"
+      - "casaos.host.port=3000"
+      - "casaos.mounts.backend=./backend/data:/app/data"
     depends_on:
       backend:
         condition: service_healthy
