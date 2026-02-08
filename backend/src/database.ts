@@ -74,6 +74,10 @@ export async function getSnapshotById(id: string): Promise<DbRow | null> {
   return row || null;
 }
 
+export async function deleteSnapshotById(id: string): Promise<void> {
+  await runAsync("DELETE FROM snapshots WHERE id = ?", [id]);
+}
+
 export function closeDatabase(): void {
   db.close();
 }

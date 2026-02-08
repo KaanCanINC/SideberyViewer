@@ -24,6 +24,16 @@ export async function uploadSnapshot(file: File): Promise<{ id: string; time: nu
   return response.data;
 }
 
+export async function deleteSnapshot(id: string): Promise<void> {
+  await api.delete(`/api/snapshots/${id}`);
+}
+
+export async function updateSnapshot(id: string, raw: any, time?: number): Promise<any> {
+  const body = { raw, time };
+  const response = await api.put(`/api/snapshots/${id}`, body);
+  return response.data;
+}
+
 export async function listSnapshots(): Promise<SnapshotMeta[]> {
   const response = await api.get<SnapshotMeta[]>("/api/snapshots");
   return Array.isArray(response.data) ? response.data : [];
@@ -32,6 +42,11 @@ export async function listSnapshots(): Promise<SnapshotMeta[]> {
 export async function getParsedSnapshot(id: string): Promise<ParsedSnapshot> {
   const response = await api.get<ParsedSnapshot>(`/api/snapshots/${id}/parsed`);
   return response.data;
+}
+
+export async function getRawSnapshot(id: string): Promise<any> {
+  const response = await api.get(`/api/snapshots/${id}`);
+  return response.data?.raw;
 }
 
 export async function checkHealth(): Promise<{ status: string; timestamp: string }> {

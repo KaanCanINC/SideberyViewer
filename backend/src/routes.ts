@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { randomUUID } from "crypto";
-import { insertSnapshot, listSnapshots, getSnapshotById } from "./database";
+import { insertSnapshot, listSnapshots, getSnapshotById, deleteSnapshotById } from "./database";
 import { buildParsedSnapshot } from "./parser";
 import { SnapshotRaw } from "./types";
 
@@ -162,6 +162,53 @@ export async function registerRoutes(server: FastifyInstance): Promise<void> {
         request.log.error(err);
         return reply.status(500).send({
           error: "Failed to parse snapshot",
+          detail: err.message || String(err),
+        });
+      }
+    }
+  );
+
+  // PUT /api/snapshots/:id - Replace snapshot raw JSON (for edits)
+  server.put<{ Params: { id: string } }>(
+    "/api/snapshots/:id",
+    async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+      try {
+        const { id } = request.params;
+        const body = request.body as any;
+        if (!body || !body.raw) {
+          return reply.status(400).send({ error: "Missing raw snapshot in body" });
+        }
+
+        // Validate JSON shape minimally
+        const raw = body.raw;
+        const time = body.time ?? Date.now();
+        const now = new Date().toISOString();
+
+        await insertSnapshot(id, time, JSON.stringify(raw), now);
+
+        return reply.send({ id, time, created_at: now });
+      } catch (err: any) {
+        request.log.error(err);
+        return reply.status(500).send({
+          error: "Failed to update snapshot",
+          detail: err.message || String(err),
+        });
+      }
+    }
+  );
+
+  // DELETE /api/snapshots/:id - Remove snapshot
+  server.delete<{ Params: { id: string } }>(
+    "/api/snapshots/:id",
+    async (request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) => {
+      try {
+        const { id } = request.params;
+        await deleteSnapshotById(id);
+        return reply.status(204).send();
+      } catch (err: any) {
+        request.log.error(err);
+        return reply.status(500).send({
+          error: "Failed to delete snapshot",
           detail: err.message || String(err),
         });
       }
