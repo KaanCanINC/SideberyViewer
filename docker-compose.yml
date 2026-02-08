@@ -1,11 +1,8 @@
-# version: "3.8"
+version: "3.8"
 
 services:
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: sidebery-backend
+    image: kaancaninc/sidebery-backend:latest
     restart: unless-stopped
     ports:
       - "4000:4000"
@@ -13,14 +10,19 @@ services:
       - ./backend/data:/app/data
     environment:
       - NODE_ENV=production
+    networks:
+      - sidebery_net
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: sidebery-frontend
+    image: kaancaninc/sidebery-frontend:latest
     restart: unless-stopped
     ports:
       - "8080:80"
     depends_on:
       - backend
+    networks:
+      - sidebery_net
+
+networks:
+  sidebery_net:
+    name: sidebery_net
