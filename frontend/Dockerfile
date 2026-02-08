@@ -1,8 +1,13 @@
 FROM node:18 AS builder
 WORKDIR /app
+
+# Copy package manifest and install dependencies (including dev deps needed for build)
 COPY package*.json ./
+RUN npm install --include=dev
+
+# Copy rest of the sources and build
 COPY . ./
-RUN npm install
+ENV PATH=/app/node_modules/.bin:$PATH
 RUN npm run build
 
 FROM nginx:stable-alpine
