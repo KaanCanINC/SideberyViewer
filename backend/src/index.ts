@@ -142,8 +142,11 @@ const initDb = async () => {
 
 const server = Fastify({ logger: true });
 
-server.register(require("@fastify/formbody")); // support application/x-www-form-urlencoded / json
 server.register(require("@fastify/multipart"), { attachFieldsToBody: true, limits: { fileSize: 50 * 1024 * 1024 } });
+
+server.get("/health", async () => {
+  return { status: "ok", timestamp: new Date().toISOString() };
+});
 
 server.post("/api/snapshots", async (request, reply) => {
   try {
