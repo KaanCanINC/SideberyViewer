@@ -1,7 +1,8 @@
 import axios from "axios";
 import { SnapshotMeta, ParsedSnapshot } from "./types";
 
-const API_BASE_URL = "http://localhost:4000";
+// Use a relative API path so nginx can proxy `/api` to the backend
+const API_BASE_URL = "/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
