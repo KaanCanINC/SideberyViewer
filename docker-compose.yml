@@ -2,8 +2,11 @@ version: "3.8"
 
 services:
   backend:
-    image: KaanCanINC/sidebery-backend:latest
+    image: kaancaninc/sidebery-backend:latest
     container_name: sidebery-backend
+    labels:
+      - "casaos.host.port=4000"
+      - "casaos.mounts.data=./backend/data:/app/data"
     volumes:
       - ./backend/data:/app/data
     ports:
@@ -27,7 +30,6 @@ services:
       - "casaos.webui.port=80"
       - "casaos.webui.path=/"
       - "casaos.host.port=3000"
-      - "casaos.mounts.backend=./backend/data:/app/data"
     depends_on:
       backend:
         condition: service_healthy
