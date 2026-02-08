@@ -20,6 +20,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+    networks:
+      - backend
 
   frontend:
     image: kaancaninc/sidebery-frontend:latest
@@ -40,6 +42,12 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5s
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend
 
 volumes:
   backend-data:
